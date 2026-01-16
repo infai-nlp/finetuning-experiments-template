@@ -1,0 +1,42 @@
+[tool.poetry]
+name = "llm-cli"
+version = "0.1.0"
+description = "A Command Line Interface (CLI) for finetuning and evaluating LLMs"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "==3.12.*"
+tensorboard = "^2.20.0"
+
+[tool.poetry.group.core.dependencies]
+click = "^8.3.1"
+transformers = "^4.57.3"
+datasets = "^4.4.1"
+
+[tool.poetry.group.train.dependencies]
+torch = {version = "2.8.0", source = "torch"}
+torchvision = {version = "0.23.0", source = "torch"}
+torchaudio = {version = "2.8.0", source = "torch"}
+trl = "^0.26.1"
+accelerate = "^1.12.0"
+peft = "^0.18.0"
+bitsandbytes = "^0.49.0"
+
+[tool.poetry.group.evaluation.dependencies]
+datasets = "^4.4.1"
+evaluate = "^0.4.6"
+
+[tool.poetry.group.inference.dependencies]
+vllm = "0.11.0"
+
+[tool.poetry.scripts]
+llm-cli = "llm_cli.cli:cli"
+
+[[tool.poetry.source]]
+name = "torch"
+url = "https://download.pytorch.org/whl/cu126"
+priority = "explicit"
+
+[build-system]
+requires = ["poetry-core>=2.0.0"]
+build-backend = "poetry.core.masonry.api"

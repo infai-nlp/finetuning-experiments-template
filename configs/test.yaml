@@ -1,0 +1,59 @@
+model: Test/Test-1B-Instruct # hugginface model id
+model_type: chat # vs. base
+dataset: # huggingface dataset with fields: "prompt" & "completion"
+base_dir: # dir for experiment results
+experiment_name: # experiment dir in base_dir
+
+train:
+  lora: # https://huggingface.co/docs/peft/v0.18.0/en/package_reference/lora#peft.LoraConfig
+    r: 16
+    lora_alpha: 32
+    lora_dropout: 0.1
+    target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+
+  sft: # https://huggingface.co/docs/trl/v0.26.1/en/sft_trainer#trl.SFTConfig
+    per_device_train_batch_size: 1
+    gradient_accumulation_steps: 8
+    learning_rate: 2.0e-4
+    num_train_epochs: 1
+    max_length: 4096
+    gradient_checkpointing: true
+    packing: false
+    weight_decay: 0.01
+    lr_scheduler_type: cosine
+    warmup_ratio: 0.05
+    bf16: true
+    tf32: true
+    eval_strategy: "steps"
+    eval_steps: 0.10
+    eval_on_start: true
+    bf16_full_eval: true
+    logging_strategy: "steps"
+    logging_steps: 0.01
+    logging_first_step: true
+    save_strategy: "epoch"
+    report_to: tensorboard
+
+
+infer:
+  apply_chat_template: true
+  llm_params:
+    dtype: bfloat16
+    tensor_parallel_size: 1 # shards model which do not fit one GPU
+    pipeline_parallel_size: 1 # replicates the "whole" process, i.e. (data and tensor parallel) x times
+    data_parallel_size: 1 # if model fits one GPU
+    max_model_len: 4096
+    gpu_memory_utilization: 0.90
+
+  sampling_params:
+    n: 1
+    temperature: 0.0 # greedy decoding
+    max_tokens: 4096
+    #repetition_penalty: 1.05
+    #top_p: 0.95
+    #top_k: 40
+
+
+eval:
+  our_task:
+    metrics: [exact_match]
