@@ -86,3 +86,7 @@ $base_dir/
                 ├── training_args.bin
                 └── and so on    
 ```
+
+## Acknowledgments
+
+This work has been funded by the German Federal Ministry of Research, Technology, and Space (BMFTR) under grant number 16IS24037B (project GenKIES).
